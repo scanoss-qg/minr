@@ -68,6 +68,8 @@ void help()
 	printf("-L MZ   detect license (SPDX ID) declarations (text and SPDX-License-Identifier tags)\n");
 	printf("-C MZ   detect copyright declarations\n");
 	printf("-Q MZ   extract code quality (best practices) information\n");
+	printf("-y MZ   detect possible cryptographic algoritm usage\n");
+
 	printf("\n");
 
 	printf("Help and version:\n");
