@@ -11,6 +11,9 @@
 #define TRIE_H_
 #include "malloc.h"
 #include <dirent.h>
+#include <string.h>
+#include <stdio.h>
+
 #define SINIT 0
 #define SWORD 1
 
@@ -25,7 +28,7 @@ struct T_TrieNode{
 };
 
 FILE 		*fp;
-char		currentName[10];
+char		currentName[50];
 unsigned short	currentCode=0;
 extern struct 	T_TrieNode * root;
 char currWord[50];
@@ -197,8 +200,7 @@ int parseChar(char currChar){
  * name=<algorithm Name>. Spaces are allowed. Ends with <cr><lf>
  coding=<algorithm strenght> a number in bits. There is no validation on this number
  */
-void parseFile(char *path,char *fileName){
-	char include[50];
+void parseFile(char *path,char *fileName){char include[50];
 	char absolutePath[256];
 	sprintf(absolutePath,"%s/%s",path,fileName);
 	//printf("scanning %s\r\n",absolutePath);
@@ -208,23 +210,41 @@ void parseFile(char *path,char *fileName){
 	}
 
 	while(!feof(fp)){
-		char auxName[30];
+		char auxName[50];
+		char auxLn[50];
+		
 		unsigned short auxCode=0;
 		char match;
-		match=fscanf(fp,"name=%s\r\n",auxName);
+		//memset(auxName,0,50);
+		fscanf(fp,"%s\r\n",auxLn);
+		match=sscanf(auxLn,"name=%s",auxName);
 		if(match==1){
-			memset(currentName,0,10);
-			memcpy(currentName,auxName,10);
-			memset(auxName,0,10);
+			memset(currentName,0,50);
+			
+			/*memcpy(currentName,auxName,10);
+			memset(auxName,0,10);*/
+			//strcpy(currentName,auxName);
+			sprintf(currentName,"%s",auxName);
+			//printf("Name es: %s\r\n",auxName);
+			
 		} else {
-			match=fscanf(fp,"coding=%hd\r\n",&auxCode);
+			match=sscanf(auxLn,"coding=%hd\r\n",&auxCode);
+			//match=fscanf(fp,"coding=%hd\r\n",&auxCode);
+			//printf("coding: %d\r\n",match);
+		
 			if(match==1){
+			//	printf("code: %d\r\n",auxCode);
+		
 				currentCode=auxCode;
 			} else {
 			
-				match=fscanf(fp,"%s",include);
+				match=sscanf(auxLn,"%s",include);
+			//	printf("Token: %d\r\n",match);
+		
 				if(match==-1) break;
 				if(match==1){
+				//printf("token es: %s\r\n",include);
+		
 				
 					toLower(include);
 					insert(include,root,currentName,currentCode);
